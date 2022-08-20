@@ -8,8 +8,14 @@ install: requirements.txt
 run: install
 	./$(VENV)/bin/flask run
 
+format: install
+	./$(VENV)/bin/black
+
+test:
+	./$(VENV)/bin/pytest
+
 clean:
 	rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 
-.PHONY: all install run clean
+.PHONY: all install run test clean
