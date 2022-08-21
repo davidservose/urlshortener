@@ -31,7 +31,7 @@ def create_short_url(url: str) -> Response:
     hashed_url = Hasher.hash(value=url)
     short_url: str = str(hashed_url)
     while database.get_url_record(short_url=short_url) is not None:
-        logger.info("found existing short url, finding unused hash")
+        logger.info(f"found existing short_url={short_url}, finding unused hash")
         hashed_url += 1
         short_url = str(hashed_url)
     logger.info(f"url={url}, short_url={short_url}")

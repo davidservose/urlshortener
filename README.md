@@ -36,7 +36,15 @@ link.
 
 ## Design
 
-The url shortener consists of a python web application microservice which implements REST HTTP apis that interact with a database to store and retretive the shortened urls. 
+### Overview
+
+The url shortener consists of a python microservice which implements REST HTTP apis that interact with a database to generate, store, and retrieve the shortened urls, as well as redirect users to their original url from the short url.
+
+### Architecture
+
+![System Architecture Diagram](system_diagram.png)
+
+### Data Model
 
 ## Implementation
 

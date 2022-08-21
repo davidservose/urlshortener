@@ -1,4 +1,7 @@
+import logging
+
 from flask import Flask, request, make_response, Response
+from flask.logging import default_handler
 
 import handlers
 from logging.config import dictConfig
@@ -20,11 +23,42 @@ dictConfig(
                 "formatter": "default",
             }
         },
+        "loggers": {
+            "handlers": {
+                "handlers": ["wsgi"],
+                "level": "INFO",
+                "propagate": False,
+            }
+        },
         "root": {"level": "INFO", "handlers": ["wsgi"]},
     }
 )
 
+# dictConfig({
+#     'version': 1,
+#     'formatters': {'default': {
+#         'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+#     }},
+#     'handlers': {'wsgi': {
+#         'class': 'logging.StreamHandler',
+#         'stream': 'ext://flask.logging.wsgi_errors_stream',
+#         'formatter': 'default'
+#     }},
+#     'root': {
+#         'level': 'INFO',
+#         'handlers': ['wsgi']
+#     }
+# })
+
 app = Flask(__name__)
+# for logger in (
+#     logging.getLogger('sqlalchemy'),
+#     logging.getLogger('handlers'),
+# ):
+#     logger.addHandler(default_handler)
+
+
+app.logger.info("created flask ap")
 
 
 @app.route("/v1/<short_url>")
