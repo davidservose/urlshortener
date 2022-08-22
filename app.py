@@ -60,7 +60,7 @@ def shorten_url() -> Response:
 
 
 def valid_input(url: Optional[str]) -> bool:
-    return url is not None and len(url) <= MAX_URL_LENGTH
+    return url is None or len(url) <= MAX_URL_LENGTH
 
 
 @app.teardown_appcontext
