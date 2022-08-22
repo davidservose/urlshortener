@@ -1,12 +1,12 @@
-import logging
+from typing import Optional
 
 from flask import Flask, request, make_response, Response
-from flask.logging import default_handler
 
 import handlers
 from logging.config import dictConfig
 
 from database import database
+from database.models import MAX_URL_LENGTH
 
 dictConfig(
     {
@@ -34,31 +34,7 @@ dictConfig(
     }
 )
 
-# dictConfig({
-#     'version': 1,
-#     'formatters': {'default': {
-#         'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-#     }},
-#     'handlers': {'wsgi': {
-#         'class': 'logging.StreamHandler',
-#         'stream': 'ext://flask.logging.wsgi_errors_stream',
-#         'formatter': 'default'
-#     }},
-#     'root': {
-#         'level': 'INFO',
-#         'handlers': ['wsgi']
-#     }
-# })
-
 app = Flask(__name__)
-# for logger in (
-#     logging.getLogger('sqlalchemy'),
-#     logging.getLogger('handlers'),
-# ):
-#     logger.addHandler(default_handler)
-
-
-app.logger.info("created flask ap")
 
 
 @app.route("/v1/<short_url>")
@@ -74,11 +50,17 @@ def shorten_url() -> Response:
     if url is None:
         return make_response("missing url", 400)
     custom_short_url: str = data.get("custom_short_url", None)
+    if not valid_input(url) or not valid_input(custom_short_url):
+        return make_response(f"url too long, max url length is {MAX_URL_LENGTH}", 400)
     if custom_short_url is not None:
         return handlers.create_custom_short_url(
             url=url, custom_short_url=custom_short_url
         )
     return handlers.create_short_url(url=url)
+
+
+def valid_input(url: Optional[str]) -> bool:
+    return url is not None and len(url) <= MAX_URL_LENGTH
 
 
 @app.teardown_appcontext

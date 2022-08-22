@@ -9,7 +9,7 @@ run: install
 	./$(VENV)/bin/flask run
 
 format: install
-	./$(VENV)/bin/black
+	./$(VENV)/bin/black .
 
 test:
 	./$(VENV)/bin/pytest

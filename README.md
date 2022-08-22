@@ -40,11 +40,41 @@ link.
 
 The url shortener consists of a python microservice which implements REST HTTP apis that interact with a database to generate, store, and retrieve the shortened urls, as well as redirect users to their original url from the short url.
 
+The system shortens url by hashing the original url using the CRC-32 algorithm, which was chosen because it produces short hashes which satisfies the system requirement while providing enough hash space (~4 billion) to store most active websites. There are other short hash functions such as Adler32, but that algorithm does not have good collision performance on small inputs, so I chose CRC-32 for this system.
+
+https://stackoverflow.com/questions/4567089/hash-function-that-produces-short-hashes
+
+The system consists of two endpoints to satisfy the requirements:
+
+1. A HTTP Post api which creates the short urls, creates a record in the database at an unused hash value and returns the short url to the user.
+2. A redirect api which looks up the original url in the database from the short url, then returns an HTTP redirect response to the original url. A browser is able to use the HTTP redirect response to redirect the user to the original url automatically. 
+
 ### Architecture
 
 ![System Architecture Diagram](system_diagram.png)
 
 ### Data Model
+
+The system models and stores one object in a single table, the record of short urls and the original url it points to.
+
+Table definition:
+
+```
+CREATE TABLE urls (
+     id VARCHAR(36) NOT NULL,
+     short_url VARCHAR(2048) NOT NULL,
+     original_url VARCHAR(2048) NOT NULL,
+     PRIMARY KEY (id, short_url),
+     UNIQUE (id),
+     UNIQUE (short_url)
+```
+
+The table has indexes on `id` and `short_url` for efficient querying and has a `unique` constraint on those fields as well in order to prevent collisions.
+
+The length of `id` matches the length of the string representation of the uuid4 format, and the length of the url fields is defined by the minimum limit of the popular browsers, although there is no technical limit to url length according to the RFC.
+
+https://support.microsoft.com/en-us/topic/maximum-url-length-is-2-083-characters-in-internet-explorer-174e7c8a-6666-f4e0-6fd6-908b53c12246
+https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
 
 ## Implementation
 
@@ -53,6 +83,8 @@ The url shortener is implemented as a python flask web app with the following en
 2. `/v1/<short_url>` which redirects to the original url.
 
 The data storage layer is a sqllite database accessed through sqlalchemy to demonstrate data access patterns, persistence, and modularity.
+
+The hash function is `Adler32`, which was chosen for it's short hash values of the size of an integer, as well as it's 
 
 ## Future Work
 
