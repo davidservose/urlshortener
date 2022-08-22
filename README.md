@@ -84,8 +84,6 @@ The url shortener is implemented as a python flask web app with the following en
 
 The data storage layer is a sqllite database accessed through sqlalchemy to demonstrate data access patterns, persistence, and modularity.
 
-The hash function is `Adler32`, which was chosen for it's short hash values of the size of an integer, as well as it's 
-
 ## Future Work
 
 ### Additional features (Recommended for being considered a production service)
