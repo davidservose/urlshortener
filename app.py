@@ -33,9 +33,8 @@ dictConfig(
         "root": {"level": "INFO", "handlers": ["wsgi"]},
     }
 )
-
-app = Flask(__name__)
 database.create_model_tables()
+app = Flask(__name__)
 
 
 @app.route("/v1/<short_url>")
