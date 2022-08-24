@@ -1,4 +1,4 @@
-from database import db_session
+from database import db_session, Base, engine
 from database.models import Url
 
 
@@ -10,6 +10,10 @@ def create_url_record(original_url: str, short_url: str) -> None:
 
 def get_url_record(short_url: str) -> Url:
     return Url.query.filter(Url.short_url == short_url).first()
+
+
+def create_model_tables() -> None:
+    Base.metadata.create_all(bind=engine)
 
 
 def remove_session() -> None:

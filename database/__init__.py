@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 
 engine = create_engine("sqlite:////tmp/test.db")
 db_session = scoped_session(
@@ -9,4 +10,3 @@ db_session = scoped_session(
 
 Base = declarative_base()
 Base.query = db_session.query_property()
-Base.metadata.create_all(bind=engine)

@@ -35,6 +35,7 @@ dictConfig(
 )
 
 app = Flask(__name__)
+database.create_model_tables()
 
 
 @app.route("/v1/<short_url>")
